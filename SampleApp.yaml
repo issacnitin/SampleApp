@@ -1,0 +1,8 @@
+version: v0.1
+testName: SampleTestPlan-das
+testPlan: SampleApp.jmx
+configurationFiles:
+    - '*.csv'
+description: 'SampleApp Test Run'
+engineInstances: 1
+engineSize: M
