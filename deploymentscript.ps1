@@ -2,7 +2,7 @@
 {
     try
     {
-        (Invoke-WebRequest -Uri $Url -UseBasicParsing -DisableKeepAlive).StatusCode
+        [System.Net.WebRequest]::Create($Url).GetResponse()
     }
     catch [Net.WebException]
     {
@@ -29,7 +29,6 @@ while($true) {
     # Create the request
     $HTTP_Status = Get-UrlStatusCode('http://' + $deploymentName + '.azurewebsites.net')
     if($HTTP_Status -eq 0) {
-        Write-Host "Webapp name available"
         break
     } else {
         Write-Host "Webapp name taken"
@@ -63,6 +62,8 @@ Write-Host "Publishing sample app.. (this might take a minute or two)"
 git init
 git add -A
 git commit -m "Initial commit"
+git remote add azwebapp $publishConfig.scmUri
+git remote rm azwebapp 
 git remote add azwebapp $publishConfig.scmUri
 git push azwebapp master
 
