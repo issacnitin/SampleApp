@@ -15,7 +15,7 @@ $output = az account show | ConvertFrom-Json
 $subscriptionList = az account list | ConvertFrom-Json 
 $subscriptionList | Format-Table name, id, tenantId -AutoSize
 $selectedSubscription = $output.name
-Write-Host "Currently logged in to subscription" $output.name " in tenant " $output.tenantId
+Write-Host "Currently logged in to subscription """$output.name.Trim()""" in tenant " $output.tenantId
 $selectedSubscription = Read-Host "Enter subscription Id ("$output.id")"
 if([string]::IsNullOrWhiteSpace($selectedSubscription)) {
     $selectedSubscription = $output.id
@@ -69,4 +69,4 @@ git push azwebapp master
 
 Write-Host "Deployment Complete"
 Write-Host "Open url https://$deploymentName.azurewebsites.net in the browser"
-Write-Host "To delete the app, run command 'az group delete $resourceGroup'"
+Write-Host "To delete the app, run command 'az group delete --name $resourceGroup'"
