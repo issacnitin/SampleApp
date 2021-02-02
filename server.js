@@ -7,8 +7,6 @@ var port = process.env.PORT || 8092;
 var dbOperations = require('./databaseOperations.js');
 var utils = require('./utils.js');
 
-var counter = 0;
-var total = 0;
 var server = http.createServer(function (req, res) {
     var reqUrl = req.url.replace(/^\/+|\/+$/g, '');
     if(!reqUrl || (!!reqUrl && (reqUrl == "" || reqUrl.toLowerCase() == "index.html"))){
@@ -32,28 +30,17 @@ var server = http.createServer(function (req, res) {
         });
     }
     else if(!!reqUrl && reqUrl.toLowerCase() == "addandget") {
-        if(true) {//counter%1000 == 0) {
-            dbOperations.queryCount(function (visitCount){
-                // total = visitCount + 1;
-                utils.writeResponse(res, visitCount + 1);
-                dbOperations.addRecord("index", function(){
-                    // utils.writeResponse(res, visitCount);
-                }, function(error){
-                    utils.writeError(res, error);
-                });
-            }, function(error){
-                utils.writeError(res, error);
-            });
-        } else {
-            utils.writeResponse(res, total+1);
+        dbOperations.queryCount(function (visitCount){
+            // total = visitCount + 1;
+            utils.writeResponse(res, visitCount + 1);
             dbOperations.addRecord("index", function(){
-                total++;
                 // utils.writeResponse(res, visitCount);
             }, function(error){
                 utils.writeError(res, error);
             });
-        }
-        // counter++;
+        }, function(error){
+            utils.writeError(res, error);
+        });
     }
     else if(reqUrl.toLowerCase() == "sampleendpoint2"){
         utils.writeResponse(res, "sample endpoint 1");
