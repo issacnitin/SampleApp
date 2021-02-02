@@ -31,6 +31,9 @@
             "tags": {
                 "[concat('hidden-related:', '/subscriptions/', subscription().subscriptionId,'/resourcegroups/', resourceGroup().name, '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]": "empty"
             },
+            "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections', parameters('databaseAccountId'), 'sampledatabase', 'samplecollection')]"
+            ],
             "resources": [
                 {
                     "type": "siteextensions",
