@@ -84,5 +84,5 @@ exports.close = function (callback) {
     server.close(callback);
 };
 
-server.maxConnections = 10;
+server.maxConnections = 45;
 server.listen(port);
