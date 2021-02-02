@@ -17,7 +17,7 @@ var DbConnection = function () {
         var password = userNamePassword[1];
         var databaseName = obj.databaseName;
         var collectionName = obj.collectionName;
-        connectionString = ("mongodb://" + encodeURIComponent(userName) + ":" + encodeURIComponent(password) + "@" + stringSplit2[1] + "@" + stringSplit2[2] + "@");
+        connectionString = ("mongodb://" + encodeURIComponent(userName) + ":" + encodeURIComponent(password) + "@" + stringSplit2[1] + (stringSplit2.length >= 3 ? ("@" + stringSplit2[2] + "@") : ""));
         
         try {
             let _db = await MongoClient.connect(connectionString);
