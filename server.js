@@ -34,8 +34,8 @@ var server = http.createServer(function (req, res) {
     else if(!!reqUrl && reqUrl.toLowerCase() == "addandget") {
         if(true) {//counter%1000 == 0) {
             dbOperations.queryCount(function (visitCount){
-                total = visitCount + 1;
-                utils.writeResponse(res, total);
+                // total = visitCount + 1;
+                utils.writeResponse(res, visitCount + 1);
                 dbOperations.addRecord("index", function(){
                     // utils.writeResponse(res, visitCount);
                 }, function(error){
