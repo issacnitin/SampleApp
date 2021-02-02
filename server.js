@@ -30,8 +30,9 @@ var server = http.createServer(function (req, res) {
         });
     }
     else if(!!reqUrl && reqUrl.toLowerCase() == "addandget") {
-        dbOperations.addRecord("index", function(){
-            dbOperations.queryCount(function (visitCount){
+        dbOperations.queryCount(function (visitCount){
+            // utils.writeResponse(res, visitCount+1);
+            dbOperations.addRecord("index", function(){
                 utils.writeResponse(res, visitCount);
             }, function(error){
                 utils.writeError(res, error);
