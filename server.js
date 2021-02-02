@@ -32,7 +32,7 @@ var server = http.createServer(function (req, res) {
         });
     }
     else if(!!reqUrl && reqUrl.toLowerCase() == "addandget") {
-        if(true){ //counter%10 == 0) {
+        if(counter%10 == 0) {
             dbOperations.queryCount(function (visitCount){
                 total = visitCount + 1;
                 utils.writeResponse(res, total);
@@ -45,9 +45,9 @@ var server = http.createServer(function (req, res) {
                 utils.writeError(res, error);
             });
         } else {
-            total++;
             utils.writeResponse(res, total+1);
             dbOperations.addRecord("index", function(){
+                total++;
                 // utils.writeResponse(res, visitCount);
             }, function(error){
                 utils.writeError(res, error);
