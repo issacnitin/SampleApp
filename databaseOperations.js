@@ -14,7 +14,7 @@ if(process.env.NODE_ENV == "production"){
     var password = userNamePassword[1];
     var databaseName = obj.databaseName;
     var collectionName = obj.collectionName;
-    connectionString = ("mongodb://" + encodeURIComponent(userName) + ":" + encodeURIComponent(password) + "@" + stringSplit2[1]);
+    connectionString = ("mongodb://" + encodeURIComponent(userName) + ":" + encodeURIComponent(password) + "@" + stringSplit2[1] + "@" + stringSplit2[2] + "@");
 }
 else{
     MongoClient =  {

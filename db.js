@@ -17,13 +17,18 @@ var DbConnection = function () {
         var password = userNamePassword[1];
         var databaseName = obj.databaseName;
         var collectionName = obj.collectionName;
-        connectionString = ("mongodb://" + encodeURIComponent(userName) + ":" + encodeURIComponent(password) + "@" + stringSplit2[1]);
+        connectionString = ("mongodb://" + encodeURIComponent(userName) + ":" + encodeURIComponent(password) + "@" + stringSplit2[1] + "@" + stringSplit2[2] + "@");
         
         try {
             let _db = await MongoClient.connect(connectionString);
 
             return _db.db(databaseName).collection(collectionName);
         } catch (e) {
+            console.log("Error connecting to db")
+            console.log(connectionString)
+            console.log(databaseName)
+            console.log(collectionName)
+            console.log(e)
             return e;
         }
     }
