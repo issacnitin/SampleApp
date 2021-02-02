@@ -60,6 +60,8 @@ $publishConfig = az webapp deployment list-publishing-credentials --name $deploy
 
 Write-Host "Publishing sample app.. (this might take a minute or two)"
 git init
+git config user.email "you@example.com"
+git config user.name "Example man"
 git add -A
 git commit -m "Initial commit"
 git remote add azwebapp $publishConfig.scmUri
