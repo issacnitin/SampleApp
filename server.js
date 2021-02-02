@@ -32,7 +32,7 @@ var server = http.createServer(function (req, res) {
         });
     }
     else if(!!reqUrl && reqUrl.toLowerCase() == "addandget") {
-        if(counter%10 == 0) {
+        if(true) {//counter%10 == 0) {
             dbOperations.queryCount(function (visitCount){
                 total = visitCount + 1;
                 utils.writeResponse(res, total);
