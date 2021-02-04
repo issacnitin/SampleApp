@@ -64,7 +64,7 @@ git config user.email "you@example.com"
 git config user.name "Example man"
 git add -A
 git commit -m "Initial commit"
-git remote add azwebapp $publishConfig.scmUri
+$a = git remote add azwebapp $publishConfig.scmUri
 git remote rm azwebapp 
 git remote add azwebapp $publishConfig.scmUri
 git push azwebapp master
