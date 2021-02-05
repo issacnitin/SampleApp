@@ -27,6 +27,19 @@ if([string]::IsNullOrWhiteSpace($selectedSubscription)) {
 
 while($true) {
     $deploymentName = Read-Host -Prompt "Enter webapp name"
+    if($deploymentName.ToLower() -match "xbox") {
+        Write-Host "Webapp name cannot have keywords xbox,windows,login,microsoft"
+        continue
+    } elseif ($deploymentName.ToLower() -match "windows") {
+        Write-Host "Webapp name cannot have keywords xbox,windows,login,microsoft"
+        continue
+    } elseif ($deploymentName.ToLower() -match "login") {
+        Write-Host "Webapp name cannot have keywords xbox,windows,login,microsoft"
+        continue
+    } elseif ($deploymentName.ToLower() -match "microsoft") {
+        Write-Host "Webapp name cannot have keywords xbox,windows,login,microsoft"
+        continue
+    }
     # Create the request
     $HTTP_Status = Get-UrlStatusCode('http://' + $deploymentName + '.azurewebsites.net')
     if($HTTP_Status -eq 0) {
