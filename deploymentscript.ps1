@@ -10,6 +10,7 @@
     }
 }
 
+$ErrorActionPreference = "Stop"
 # az login --use-device-code
 $output = az account show | ConvertFrom-Json
 $subscriptionList = az account list | ConvertFrom-Json 
