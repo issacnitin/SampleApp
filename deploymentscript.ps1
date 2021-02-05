@@ -11,6 +11,7 @@
 }
 
 $ErrorActionPreference = "Stop"
+[Console]::ResetColor()
 # az login --use-device-code
 $output = az account show | ConvertFrom-Json
 $subscriptionList = az account list | ConvertFrom-Json 
@@ -18,15 +19,17 @@ $subscriptionList | Format-Table name, id, tenantId -AutoSize
 $selectedSubscription = $output.name
 Write-Host "Currently logged in to subscription """$output.name.Trim()""" in tenant " $output.tenantId
 $selectedSubscription = Read-Host "Enter subscription Id ("$output.id")"
+$selectedSubscription = $selectedSubscription.Trim()
 if([string]::IsNullOrWhiteSpace($selectedSubscription)) {
     $selectedSubscription = $output.id
 } else {
-    az account set --subscription $selectedSubscription
+    # az account set --subscription $selectedSubscription
     Write-Host "Changed to subscription ("$selectedSubscription")"
 }
 
 while($true) {
     $deploymentName = Read-Host -Prompt "Enter webapp name"
+    $deploymentName = $deploymentName.Trim()
     if($deploymentName.ToLower() -match "xbox") {
         Write-Host "Webapp name cannot have keywords xbox,windows,login,microsoft"
         continue
@@ -50,27 +53,28 @@ while($true) {
 }
 
 $location = Read-Host -Prompt "Enter location (eastus)"
+$location = $location.Trim()
 if([string]::IsNullOrWhiteSpace($location)) {
     $location = "eastus"
 }
 
 $resourceGroup = $deploymentName + "-rg"
 Write-Host "Creating resource group " $resourceGroup
-az group create --location $location --name $resourceGroup
+az group create --location $location --name $resourceGroup --subscription $selectedSubscription
 $databaseName = $deploymentName + "db"
 
 Write-Host "Deploying Sample application.. (this might take a few minutes)"
-$deploymentOutputs = az deployment group create --resource-group $resourceGroup --mode Incremental --template-file ./windows-webapp-template.json --parameters "webAppName=$deploymentName" --parameters "hostingPlanName=$deploymentName-host" --parameters "appInsightsLocation=$location" --parameters "sku=P1V2 Premium" --parameters "databaseAccountId=$databaseName" --parameters "databaseAccountLocation=$location"
+$deploymentOutputs = az deployment group create --resource-group $resourceGroup --subscription $selectedSubscription --mode Incremental --template-file ./windows-webapp-template.json --parameters "webAppName=$deploymentName" --parameters "hostingPlanName=$deploymentName-host" --parameters "appInsightsLocation=$location" --parameters "sku=P1V2 Premium" --parameters "databaseAccountId=$databaseName" --parameters "databaseAccountLocation=$location"
 $deploymentOutputs = $deploymentOutputs | ConvertFrom-Json
 $connectionString = $deploymentOutputs.properties.outputs.azureCosmosDBAccountKeys.value.connectionStrings[0].connectionString
 
 Write-Host "Setting connection string to cosmos db"
-$setConnectionString = az webapp config appsettings set --name $deploymentName --resource-group $resourceGroup --settings CONNECTION_STRING="$connectionString"
+$setConnectionString = az webapp config appsettings set --name $deploymentName --resource-group $resourceGroup --subscription $selectedSubscription --settings CONNECTION_STRING="$connectionString"
 
 Write-Host "Setting app setting for App Service"
-$setAppSettings = az webapp config appsettings set --name $deploymentName --resource-group $resourceGroup --settings MSDEPLOY_RENAME_LOCKED_FILES=1
+$setAppSettings = az webapp config appsettings set --name $deploymentName --resource-group $resourceGroup --subscription $selectedSubscription --settings MSDEPLOY_RENAME_LOCKED_FILES=1
 
-$publishConfig = az webapp deployment list-publishing-credentials --name $deploymentName --resource-group $resourceGroup | ConvertFrom-Json
+$publishConfig = az webapp deployment list-publishing-credentials --name $deploymentName --resource-group $resourceGroup --subscription $selectedSubscription | ConvertFrom-Json
 
 Write-Host "Publishing sample app.. (this might take a minute or two)"
 git init
