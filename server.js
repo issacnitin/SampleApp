@@ -7,8 +7,12 @@ var port = process.env.PORT || 8092;
 var dbOperations = require('./databaseOperations.js');
 var utils = require('./utils.js');
 
+
+var lastTimestamp = 0;
 var server = http.createServer(function (req, res) {
     var reqUrl = req.url.replace(/^\/+|\/+$/g, '');
+    var method = req.method.toLowerCase();
+    
     if(!reqUrl || (!!reqUrl && (reqUrl == "" || reqUrl.toLowerCase() == "index.html"))){
         var data = fs.readFileSync('index.html');
         
@@ -18,59 +22,69 @@ var server = http.createServer(function (req, res) {
             var visitCountElement = dom.window.document.getElementById("visitCount");
             if(!!visitCountElement){
                 visitCountElement.innerHTML = "Total visits: " + visitCount;
-                data = dom.serialize();
             }
+            var lastVisitElement = dom.window.document.getElementById("lastTimestamp");
+            if(!!lastVisitElement) {
+                lastVisitElement.innerHTML = "Time since last visit (in milliseconds): " + (lastTimestamp == 0 ? "Never visited" : (Date.now() - lastTimestamp));
+            }
+            lastTimestamp = Date.now();
+            data = dom.serialize();
             utils.writeResponse(res, data);
             dbOperations.addRecord("index", function(){
             }, function(error){
                 // utils.writeResponse(res, data);
             });
-        }, function(error){
+        }, function(error){ 
             utils.writeError(res, error);
         });
     }
-    else if(!!reqUrl && reqUrl.toLowerCase() == "addandget") {
-        dbOperations.queryCount(function (visitCount){
-            // total = visitCount + 1;
-            utils.writeResponse(res, visitCount + 1);
-            dbOperations.addRecord("index", function(){
-                // utils.writeResponse(res, visitCount);
+    else if(!!reqUrl && reqUrl.toLowerCase() == "get" && method == "get") {
+        setTimeout(() => {
+            dbOperations.queryCount(function (visitCount){
+                // total = visitCount + 1;
+                utils.writeResponse(res, visitCount + 1);
             }, function(error){
                 utils.writeError(res, error);
             });
-        }, function(error){
-            utils.writeError(res, error);
-        });
+        }, 10);
     }
-    else if(reqUrl.toLowerCase() == "sampleendpoint2"){
-        utils.writeResponse(res, "sample endpoint 1");
+    else if(!!reqUrl && reqUrl.toLowerCase() == "add" && method == "post") {
+        setTimeout(() => {
+            let body = "";
+            let entries = 0;
+            req.on('data', chunk => {
+                body += chunk;
+            })
+            req.on('end', () => {
+                console.log("add request body: " + body)
+                entries = parseInt(body) // 'Buy the milk'
+                var counter = 0;
+                var success = 0;
+                console.log(entries)
+                if(entries == 0) {
+                    utils.writeResponse(res, "added " + entries + " entries")
+                }
+                for(let i = 0; i < entries; i++) {
+                    dbOperations.addRecord("index", function(){
+                        lastTimestamp = Date.now();
+                        counter++; success++;
+                        if(counter == entries) {
+                            utils.writeResponse(res, "added " + success + " entries")
+                        }
+                    }, function(error){
+                        counter++;
+                        if(counter == entries) {
+                            utils.writeResponse(res, "added " + success + " entries")
+                        }
+                    });
+                }
+            }) 
+        }, 10);
     }
-    else if(reqUrl.toLowerCase() == "sampleendpoint1"){
-        utils.writeResponse(res, "sample endpoint 2");
-    }
-    else if (reqUrl.toLowerCase() == "favicon.ico"){
-        data = fs.readFileSync("img/successCloudNew.svg");
-        res.writeHead(200, { 'Content-Type': 'image/svg+xml', 'Content-Length': data.length });
-        res.write(data);
-        res.end();
-    }
-    else if (fs.existsSync(reqUrl)) {
-        var contentType = "text/plain";
-        data = fs.readFileSync(reqUrl);
-        switch(reqUrl.split('.').pop()){
-            case "css":
-                contentType = "text/css";
-                break;
-            case "ttf":
-                contentType = "font/ttf";
-                break;
-            case "svg":
-                contentType = "image/svg+xml";
-                break;
-        }
-        res.writeHead(200, { 'Content-Type': contentType, 'Content-Length': data.length });
-        res.write(data);
-        res.end();
+    else if(reqUrl.toLowerCase() == "lasttimestamp" && method == "get"){
+        setTimeout(() => {
+            utils.writeResponse(res, lastTimestamp);
+        }, 10);
     }
     else {
         utils.writeResponse(res, "not found");

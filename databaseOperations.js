@@ -47,25 +47,29 @@ else{
 
 module.exports = {
 
-    queryCount: function (callback, errorCallback, retry = 2) {
+    queryCount: function (callback, errorCallback, retry = 3) {
         DbConnection.Get()
         .then((mongoClient) => {
             // Find some documents
             mongoClient.count(function (err, count) {
                 if (err != null) {
                     if(retry > 0) {
-                        queryCount(callback, errorCallback, retry-1);
+                        setTimeout(() => {
+                            queryCount(callback, errorCallback, retry-1);
+                        }, (3 - retry) * 600);
                         return;
+                    } else {
+                        errorCallback(err)
                     }
-                    errorCallback(err)
+                } else {
+                    console.log(`Found ${count} records`);
+                    callback(count);
                 }
-                console.log(`Found ${count} records`);
-                callback(count);
             });
         })
     },
 
-    addRecord: function (pageName, callback, errorCallback, retry = 2) {
+    addRecord: function (pageName, callback, errorCallback, retry = 3) {
         
         DbConnection.Get()
         .then((mongoClient) => {
@@ -79,12 +83,16 @@ module.exports = {
             mongoClient.insertMany([itemBody], function (err, result) {
                 if (err != null) {
                     if(retry > 0) {
-                        addRecord(pageName, callback, errorCallback, retry-1);
+                        setTimeout(() => {
+                            addRecord(pageName, callback, errorCallback, retry-1);
+                        }, (3 - retry) * 600);
                         return;
+                    } else {
+                        errorCallback(err)
                     }
-                    errorCallback(err)
+                } else {
+                    callback();
                 }
-                callback();
             });
         })
     }
