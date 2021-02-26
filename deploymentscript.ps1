@@ -64,7 +64,7 @@ az group create --location $location --name $resourceGroup --subscription $selec
 $databaseName = $deploymentName + "db"
 
 Write-Host "Deploying Sample application.. (this might take a few minutes)"
-$deploymentOutputs = az deployment group create --resource-group $resourceGroup --subscription $selectedSubscription --mode Incremental --template-file ./windows-webapp-template.json --parameters "webAppName=$deploymentName" --parameters "hostingPlanName=$deploymentName-host" --parameters "appInsightsLocation=$location" --parameters "sku=P1V2 Premium" --parameters "databaseAccountId=$databaseName" --parameters "databaseAccountLocation=$location"
+$deploymentOutputs = az deployment group create --resource-group $resourceGroup --subscription $selectedSubscription --mode Incremental --template-file ./windows-webapp-template.json --parameters "webAppName=$deploymentName" --parameters "hostingPlanName=$deploymentName-host" --parameters "appInsightsLocation=$location" --parameters "sku=P2V2 Premium" --parameters "databaseAccountId=$databaseName" --parameters "databaseAccountLocation=$location"
 $deploymentOutputs = $deploymentOutputs | ConvertFrom-Json
 $connectionString = $deploymentOutputs.properties.outputs.azureCosmosDBAccountKeys.value.connectionStrings[0].connectionString
 

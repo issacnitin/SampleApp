@@ -82,7 +82,7 @@
                 "name": "[parameters('hostingPlanName')]",
                 "workerSizeId": "0",
                 "reserved": false,
-                "numberOfWorkers": "4",
+                "numberOfWorkers": "2",
                 "hostingEnvironment": ""
             }
         },
