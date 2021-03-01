@@ -47,7 +47,7 @@ else{
 
 module.exports = {
 
-    queryCount: function (callback, errorCallback, retry = 1) {
+    queryCount: function (callback, errorCallback, retry = 2) {
         DbConnection.Get()
         .then((mongoClient) => {
             // Find some documents
@@ -69,7 +69,7 @@ module.exports = {
         })
     },
 
-    addRecord: function (pageName, callback, errorCallback, retry = 1) {
+    addRecord: function (pageName, callback, errorCallback, retry = 2) {
         
         DbConnection.Get()
         .then((mongoClient) => {
