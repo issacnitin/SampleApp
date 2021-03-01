@@ -47,7 +47,7 @@ else{
 
 module.exports = {
 
-    queryCount: function (callback, errorCallback, retry = 2) {
+    queryCount: function (callback, errorCallback, retry = 2) { 
         DbConnection.Get()
         .then((mongoClient) => {
             // Find some documents
