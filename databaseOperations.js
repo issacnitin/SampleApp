@@ -60,7 +60,7 @@ module.exports = {
                         return;
                     } else {
                         errorCallback(err)
-                    }
+                    } 
                 } else {
                     console.log(`Found ${count} records`);
                     callback(count);
