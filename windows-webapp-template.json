@@ -11,10 +11,6 @@
         "appInsightsLocation": {
             "type": "string"
         },
-        "sku": {
-            "type": "string",
-            "defaultValue": "Standard S3"
-        },
         "databaseAccountId": {
             "type": "string"
         },
@@ -65,25 +61,32 @@
                 "hostingEnvironment": ""
             },
             "dependsOn": [
-                "[concat('Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
+                "[resourceId('Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
                 "[resourceId('microsoft.insights/components/', parameters('webAppName'))]"
             ]
         },
         {
             "type": "Microsoft.Web/serverfarms",
-            "sku": {
-                "Tier": "[first(skip(split(parameters('sku'), ' '), 1))]",
-                "Name": "[first(split(parameters('sku'), ' '))]"
-            },
+            "apiVersion": "2018-02-01",
             "name": "[parameters('hostingPlanName')]",
-            "apiVersion": "2015-08-01",
             "location": "[resourceGroup().location]",
+            "sku": {
+                "name": "P2v3",
+                "tier": "PremiumV3",
+                "size": "P2v3",
+                "family": "Pv3",
+                "capacity": 2
+            },
+            "kind": "app",
             "properties": {
-                "name": "[parameters('hostingPlanName')]",
-                "workerSizeId": "0",
+                "perSiteScaling": false,
+                "maximumElasticWorkerCount": 2,
+                "isSpot": false,
                 "reserved": false,
-                "numberOfWorkers": "2",
-                "hostingEnvironment": ""
+                "isXenon": false,
+                "hyperV": false,
+                "targetWorkerCount": 0,
+                "targetWorkerSizeId": 0
             }
         },
         {
