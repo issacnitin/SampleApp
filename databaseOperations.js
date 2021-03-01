@@ -56,7 +56,7 @@ module.exports = {
                     if(retry > 0) {
                         setTimeout(() => {
                             queryCount(callback, errorCallback, retry-1);
-                        }, (3 - retry) * 600);
+                        }, (3 - retry) * 200);
                         return;
                     } else {
                         errorCallback(err)
@@ -85,7 +85,7 @@ module.exports = {
                     if(retry > 0) {
                         setTimeout(() => {
                             addRecord(pageName, callback, errorCallback, retry-1);
-                        }, (3 - retry) * 600);
+                        }, (3 - retry) * 200);
                         return;
                     } else {
                         errorCallback(err)
