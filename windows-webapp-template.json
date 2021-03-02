@@ -75,12 +75,12 @@
                 "tier": "PremiumV3",
                 "size": "P2v3",
                 "family": "Pv3",
-                "capacity": 2
+                "capacity": 1
             },
             "kind": "app",
             "properties": {
                 "perSiteScaling": false,
-                "maximumElasticWorkerCount": 2,
+                "maximumElasticWorkerCount": 1,
                 "isSpot": false,
                 "reserved": false,
                 "isXenon": false,
